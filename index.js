@@ -8,15 +8,14 @@ function generateCategories(){
       resp.data.forEach((val, index)=>{
         txt = txt + `INSERT INTO categories (id, name, "createdAt", "updatedAt") VALUES (${++index}, '${val.name}', '2022-06-09', '2022-06-09');\n`;
       });
-      fs.writeFile('categories.sql', txt, 'utf8', ()=>{});
+      try {
+        fs.readFileSync('categories.sql')
+        fs.unlinkSync('categories.sql')
+        fs.writeFile('categories.sql', txt, 'utf8', ()=>{});
+      } catch (error) {
+        fs.writeFile('categories.sql', txt, 'utf8', ()=>{});
+      } 
     })
-    try {
-      fs.readFileSync('productsCategories.sql')
-      fs.unlinkSync('productsCategories.sql')
-      fs.writeFile('productsCategories.sql', txtPC, ()=>{});
-    } catch (error) {
-      fs.writeFile('productsCategories.sql', txtPC, ()=>{});
-    } 
 }
 
 function generateProducts(){
@@ -27,17 +26,15 @@ function generateProducts(){
     resp.data.results.forEach((val)=>{
       txtP = txtP + `INSERT INTO products (id, name, price, image, description, condition, brand, model, stock, score, state,"createdAt", "updatedAt", "userId") VALUES (${++index}, '${val.title}', '${val.price}', '${val.thumbnail}', '${val.permalink}', '${val.condition}', null, '${val.prices.id}', '${val.sold_quantity}', null, 'active', '2022-06-09', '2022-06-09', 1);\n`;
     });
-    fs.writeFile('products.sql', txtP, ()=>{});
+    try {
+      fs.readFileSync('products.sql')
+      fs.unlinkSync('products.sql')
+      fs.writeFile('products.sql', txtP, ()=>{});
+    } catch (error) {
+      fs.writeFile('products.sql', txtP, ()=>{});
+    } 
   })
-  try {
-    fs.readFileSync('productsCategories.sql')
-    fs.unlinkSync('productsCategories.sql')
-    fs.writeFile('productsCategories.sql', txtPC, ()=>{});
-  } catch (error) {
-    fs.writeFile('productsCategories.sql', txtPC, ()=>{});
-  } 
 }
-
 
 function generateProductsCategories(){
   let txtPC = '';
@@ -57,5 +54,5 @@ function generateProductsCategories(){
 }
 
 generateProductsCategories();
-// generateCategories();
-// generateProducts();
+generateCategories();
+generateProducts();
